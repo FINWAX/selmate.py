@@ -70,7 +70,6 @@ def js_smooth_scroll(to_x, to_y, driver):
     :param to_x: Target x-coordinate.
     :param to_y: Target y-coordinate.
     :param driver: The Selenium WebDriver instance.
-    :return: None
     """
     driver.execute_script(f"window.scrollTo({to_x}, {to_y}, {{behaviour: 'smooth'}});")
 

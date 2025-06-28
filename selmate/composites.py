@@ -31,11 +31,12 @@ from selmate.utils import is_confirmation_text, norm_string, latency_time, norma
 logger = logging.getLogger(__name__)
 
 
-def wandering_between_elements(elements, driver, max_moves=0):
+def wandering_between_elements(elements, driver, max_moves=0, mouse_step=10.0):
     """Simulates mouse wandering between pairs of elements.
     :param elements: List of elements to wander between.
     :param driver: The Selenium WebDriver instance.
     :param max_moves: Maximum number of moves to perform.
+    :param mouse_step: Amount of pixels for one scroll.
     :return: Tuple of the last element and number of moves made.
     """
     move_cnt = 0
@@ -47,7 +48,7 @@ def wandering_between_elements(elements, driver, max_moves=0):
         if el2 is None or not element_displayed_enabled(el2):
             continue
 
-        wander_between_2_elements(el1, el2, driver, 0.01)
+        wander_between_2_elements(el1, el2, driver, mouse_step, 0.01)
         human_observe_view_latency()
 
         move_cnt += 1
@@ -140,7 +141,7 @@ def get_element_url(element: WebElement):
     return None
 
 
-def selenium_random_vertical_scroll(driver, from_ratio=-0.5, to_ratio=0.5, step=10):
+def selenium_random_vertical_scroll(driver, from_ratio=-0.5, to_ratio=0.5, step=30):
     """Performs a random vertical scroll within a ratio range.
     :param driver: The Selenium WebDriver instance.
     :param from_ratio: Minimum scroll ratio.
@@ -149,13 +150,13 @@ def selenium_random_vertical_scroll(driver, from_ratio=-0.5, to_ratio=0.5, step=
     """
     doc_height = driver.execute_script("return document.body.scrollHeight")
     aim_ratio = random.uniform(from_ratio, to_ratio)
-    logger.debug(f'Aim ratio for random human scroll: <{aim_ratio:.2f}>.')
+    logger.debug(f'Aim ratio for random selenium human scroll: {aim_ratio:.2f}.')
     on_delta = int(aim_ratio * doc_height)
 
     selenium_human_vertical_scroll(on_delta, driver, step)
 
 
-def selenium_human_vertical_scroll(y_delta, driver, step=10):
+def selenium_human_vertical_scroll(y_delta, driver, step=30):
     """Performs a smooth vertical scroll by a specified delta.
     :param y_delta: The vertical distance to scroll.
     :param driver: The Selenium WebDriver instance.
@@ -170,7 +171,7 @@ def selenium_human_vertical_scroll(y_delta, driver, step=10):
     actions.perform()
 
 
-def js_random_human_scroll(driver, from_ratio=0.25, to_ratio=1.0, step=10, to_x=0):
+def js_random_human_scroll(driver, from_ratio=0.25, to_ratio=1.0, step=30, to_x=0):
     """Performs a random vertical scroll using JavaScript.
     :param driver: The Selenium WebDriver instance.
     :param from_ratio: Minimum scroll ratio.
@@ -180,13 +181,13 @@ def js_random_human_scroll(driver, from_ratio=0.25, to_ratio=1.0, step=10, to_x=
     """
     doc_height = driver.execute_script("return document.body.scrollHeight")
     aim_ratio = random.uniform(from_ratio, to_ratio)
-    logger.debug(f'Aim ratio for random human scroll: <{aim_ratio:.2f}>.')
+    logger.debug(f'Aim ratio for random js human scroll: {aim_ratio:.2f}.')
     to_y = aim_ratio * doc_height
 
     js_human_vertical_scroll(to_y, driver, step, to_x)
 
 
-def js_human_vertical_scroll(to_y, driver, step=10, to_x=0):
+def js_human_vertical_scroll(to_y, driver, step=30, to_x=0):
     """Performs a smooth vertical scroll to a y-coordinate using JavaScript.
     :param to_y: Target y-coordinate.
     :param driver: The Selenium WebDriver instance.
@@ -301,7 +302,7 @@ def bypass_popup_banners(
     :param allow_removing_when_closing: Whether to allow element removal.
     """
     elements = find_top_available_elements(By.CSS_SELECTOR, 'div', driver)
-    logger.debug(f'Found <{len(elements)}> elements as potential popup banners.')
+    logger.debug(f'Found {len(elements)} elements as potential popup banners.')
     cnt = 0
     suc_cnt = 0
     for el in elements:
@@ -343,7 +344,7 @@ def close_element(element, driver, allow_removing=True, close_btn_text_threshold
         rect = element.rect
         move_radius = 2 * max(rect['width'], rect['height'])
         x, y = selenium_element_center(element)
-        logger.debug(f'Close button center coordinates: x=<{x}>, y=<{y}>.')
+        logger.debug(f'Close button center coordinates: x={x}, y={y}.')
 
         if complex_click(close_btn, driver):
             logger.debug('Successfully clicked the close button in the element.')
@@ -394,7 +395,7 @@ def accept_popup_banner(banner, driver):
         rect = btn.rect
         move_radius = 2 * max(rect['width'], rect['height'])
         x, y = selenium_element_center(btn)
-        logger.debug(f'Confirmation button center coordinates: x=<{x}>, y=<{y}>.')
+        logger.debug(f'Confirmation button center coordinates: x={x}, y={y}.')
 
         if selenium_scroll_to_element(btn, driver):
             human_observe_view_latency()
@@ -465,10 +466,10 @@ def random_mouse_move_in_vicinity(radius, driver, x1=0, y1=0, mouse_step=10.0, e
 
     actions = ActionChains(driver)
     path = generate_curved_path(x1, y1, x2, y2, mouse_step)
-    logger.debug(f'Generated mouse path: <{path}>.')
+    logger.debug(f'Generated mouse path: {path}.')
     suc_step_cnt, total_step_cnt = move_mouse_by_path(path, actions, x1, y1, eps)
 
-    logger.debug(f'Mouse movements in vicinity: <{suc_step_cnt}>/<{total_step_cnt}>.')
+    logger.debug(f'Mouse movements in vicinity: {suc_step_cnt}/{total_step_cnt}.')
 
 
 def find_top_available_elements(by, value, driver, skip_under_one=True, sort_z_children_desc=True) -> List[WebElement]:
@@ -547,7 +548,7 @@ def wander_between_2_elements(
 
     actions.move_to_element(to_element).perform()
 
-    logger.debug(f'Mouse movements while wandering between elements: <{suc_step_cnt}>/<{total_step_cnt}>.')
+    logger.debug(f'Mouse movements while wandering between elements: {suc_step_cnt}/{total_step_cnt}.')
     return True
 
 
@@ -573,7 +574,7 @@ def move_mouse_by_path(path, actions, x1=0, y1=0, eps=0.01):
         total_step_cnt += 1
 
         dx, dy = x - prev_x, y - prev_y
-        logger.debug(f'Mouse moving: dx=<{dx}>, dy=<{dy}>.')
+        logger.debug(f'Mouse moving: dx={dx}, dy={dy}.')
         if abs(dx) < eps and abs(dy) < eps:
             continue
 
