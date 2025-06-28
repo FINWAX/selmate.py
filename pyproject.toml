@@ -1,0 +1,23 @@
+[project]
+name = "selmate"
+version = "1.0.0"
+description = ""
+authors = [{ name = "FINWAX", email = "waxbid@gmail.com" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "selenium (>=4.33.0,<5.0.0)",
+    "rapidfuzz (>=3.13.0,<4.0.0)",
+    "beautifulsoup4 (>=4.13.4,<5.0.0)",
+    "lxml (>=5.4.0,<6.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+docker-chrome-session-manager = "^1.0.2"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
