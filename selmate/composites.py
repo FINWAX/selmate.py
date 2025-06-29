@@ -162,7 +162,9 @@ def selenium_human_vertical_scroll(y_delta, driver, step=30):
     :param driver: The Selenium WebDriver instance.
     :param step: Amount of pixels for one scroll.
     """
-    steps = int(y_delta / step)
+    steps = abs(int(y_delta / step))
+    if y_delta < 0:
+        step *= -1
 
     actions = ActionChains(driver)
     for i in range(steps):
