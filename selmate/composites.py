@@ -19,7 +19,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selmate.constants import WINDOW_LOCATION_HREF_JS_PATTERN
 from selmate.humanity.constants import HUMAN_SCROLL_LATENCY
 from selmate.humanity.latency import human_click_latency, human_mouse_move_latency, human_focus_element_latency, \
-    human_observe_view_latency, human_scroll_latency
+    human_observe_view_latency, human_scroll_latency, human_key_type_latency
 from selmate.js_primitives import js_smooth_scroll, js_remove_element, js_need_scroll_to_element, js_scroll_to_element, \
     js_click, js_choose_elements_above_z_index
 from selmate.safe_exceptions import safe_timeout, safe_stale, safe_out_of_bound, safe_not_found, safe_not_interactable
@@ -29,6 +29,22 @@ from selmate.utils import is_confirmation_text, norm_string, latency_time, norma
     is_webpage, generate_curved_path
 
 logger = logging.getLogger(__name__)
+
+
+@safe_not_interactable(def_val=False)
+@safe_not_found(def_val=False)
+@safe_stale(def_val=False)
+def selenium_human_type(text: str, element: WebElement) -> bool:
+    """
+    Simulate human-like typing into a web element.
+    :param text: The text to type.
+    :param element: The web element to type into.
+    """
+    for c in text:
+        element.send_keys(c)
+        human_key_type_latency()
+
+    return True
 
 
 def wandering_between_elements(elements, driver, max_moves=0, mouse_step=10.0):

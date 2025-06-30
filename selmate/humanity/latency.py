@@ -1,8 +1,14 @@
 import time
 
 from selmate.humanity.constants import HUMAN_CLICK_LATENCY, HUMAN_MOUSE_MOVE_LATENCY, HUMAN_FOCUS_ELEMENT_LATENCY, \
-    HUMAN_OBSERVE_VIEW_LATENCY, HUMAN_OBSERVE_PAGE_LATENCY, HUMAN_SCROLL_LATENCY
+    HUMAN_OBSERVE_VIEW_LATENCY, HUMAN_OBSERVE_PAGE_LATENCY, HUMAN_SCROLL_LATENCY, HUMAN_KEY_TYPE_LATENCY
 from selmate.utils import latency_time
+
+
+def human_key_type_latency():
+    """ Introduces a delay simulating human key type latency.
+    """
+    time.sleep(latency_time(*HUMAN_KEY_TYPE_LATENCY))
 
 
 def human_click_latency():
