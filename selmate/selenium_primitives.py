@@ -1,10 +1,48 @@
 from selenium.webdriver import ActionChains
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from selmate.safe_exceptions import safe_out_of_bound, safe_stale, safe_timeout, safe_click_interception, \
     safe_not_interactable
+
+
+def selenium_tabs_amount(driver: WebDriver):
+    """
+    Get amount of opened tabs.
+    :param driver: The WebDriver instance to interact with the browser.
+    :return: Amount of opened tabs.
+    """
+    return len(driver.window_handles)
+
+
+def selenium_switch_to_first_tab(driver: WebDriver):
+    """
+    Switch to the first browser tab/window.
+    :param driver: The WebDriver instance to interact with the browser.
+    :return: True if the switch was successful, False if no tabs are open.
+    """
+    if not driver.window_handles:
+        return False
+
+    driver.switch_to.window(driver.window_handles[0])
+
+    return True
+
+
+def selenium_switch_to_last_tab(driver: WebDriver):
+    """
+    Switch to the last browser tab/window.
+    :param driver: The WebDriver instance to interact with the browser.
+    :return: True if the switch was successful, False if no tabs are open.
+    """
+    if not driver.window_handles:
+        return False
+
+    driver.switch_to.window(driver.window_handles[-1])
+
+    return True
 
 
 @safe_timeout(def_val=False)
