@@ -20,8 +20,8 @@ def wait_selection(element: WebElement, driver, timeout=1.0):
     )
 
 
-@safe_not_interactable(def_val=False)
-@safe_stale(def_val=False)
+@safe_not_interactable(def_val=None)
+@safe_stale(def_val=None)
 def selenium_element_center(element: WebElement):
     """Calculates the center coordinates of a web element.
     :param element: The web element to find the center of.

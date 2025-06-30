@@ -345,7 +345,8 @@ def close_element(element, driver, allow_removing=True, close_btn_text_threshold
 
         rect = element.rect
         move_radius = 2 * max(rect['width'], rect['height'])
-        x, y = selenium_element_center(element)
+        btn_center = selenium_element_center(element)
+        x, y = 0, 0 if btn_center is None else btn_center
         logger.debug(f'Close button center coordinates: x={x}, y={y}.')
 
         if complex_click(close_btn, driver):
@@ -396,7 +397,8 @@ def accept_popup_banner(banner, driver):
 
         rect = btn.rect
         move_radius = 2 * max(rect['width'], rect['height'])
-        x, y = selenium_element_center(btn)
+        btn_center = selenium_element_center(btn)
+        x, y = 0, 0 if btn_center is None else btn_center
         logger.debug(f'Confirmation button center coordinates: x={x}, y={y}.')
 
         if selenium_scroll_to_element(btn, driver):
@@ -542,16 +544,20 @@ def wander_between_2_elements(
     actions.move_to_element(from_element).perform()
     human_focus_element_latency()
 
-    x1, y1 = selenium_element_center(from_element)
-    x2, y2 = selenium_element_center(to_element)
+    first_element_center = selenium_element_center(from_element)
+    second_element_center = selenium_element_center(to_element)
 
-    path = generate_curved_path(x1, y1, x2, y2, mouse_step)
-    suc_step_cnt, total_step_cnt = move_mouse_by_path(path, actions, x1, y1, eps)
+    suc_step_cnt, total_step_cnt = 0, 0
+    if first_element_center and second_element_center:
+        x1, y1 = first_element_center
+        x2, y2 = second_element_center
+        path = generate_curved_path(x1, y1, x2, y2, mouse_step)
+        suc_step_cnt, total_step_cnt = move_mouse_by_path(path, actions, x1, y1, eps)
 
     actions.move_to_element(to_element).perform()
 
     logger.debug(f'Mouse movements while wandering between elements: {suc_step_cnt}/{total_step_cnt}.')
-    return True
+    return bool(suc_step_cnt)
 
 
 def move_mouse_by_path(path, actions, x1=0, y1=0, eps=0.01):
