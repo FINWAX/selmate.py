@@ -362,7 +362,7 @@ def close_element(element, driver, allow_removing=True, close_btn_text_threshold
         rect = element.rect
         move_radius = 2 * max(rect['width'], rect['height'])
         btn_center = selenium_element_center(element)
-        x, y = 0, 0 if btn_center is None else btn_center
+        x, y = (0, 0) if btn_center is None else btn_center
         logger.debug(f'Close button center coordinates: x={x}, y={y}.')
 
         if complex_click(close_btn, driver):
@@ -414,7 +414,7 @@ def accept_popup_banner(banner, driver):
         rect = btn.rect
         move_radius = 2 * max(rect['width'], rect['height'])
         btn_center = selenium_element_center(btn)
-        x, y = 0, 0 if btn_center is None else btn_center
+        x, y = (0, 0) if btn_center is None else btn_center
         logger.debug(f'Confirmation button center coordinates: x={x}, y={y}.')
 
         if selenium_scroll_to_element(btn, driver):
