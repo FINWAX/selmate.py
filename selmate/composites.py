@@ -31,6 +31,33 @@ from selmate.utils import is_confirmation_text, norm_string, latency_time, norma
 logger = logging.getLogger(__name__)
 
 
+def selenium_switch_to_first_tab(driver: WebDriver):
+    """
+    Switch to the first browser tab/window.
+    :param driver: The WebDriver instance to interact with the browser.
+    :return: True if the switch was successful, False if no tabs are open.
+    """
+    if not driver.window_handles:
+        return False
+
+    driver.switch_to.window(driver.window_handles[0])
+
+    return True
+
+
+def selenium_switch_to_last_tab(driver: WebDriver):
+    """
+    Switch to the last browser tab/window.
+    :param driver: The WebDriver instance to interact with the browser.
+    :return: True if the switch was successful, False if no tabs are open.
+    """
+    if not driver.window_handles:
+        return False
+
+    driver.switch_to.window(driver.window_handles[-1])
+
+    return True
+
 @safe_not_interactable(def_val=False)
 @safe_not_found(def_val=False)
 @safe_stale(def_val=False)
