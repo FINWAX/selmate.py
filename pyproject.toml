@@ -1,6 +1,6 @@
 [project]
 name = "selmate"
-version = "1.1.1"
+version = "1.2.0"
 description = "A utility library for Selenium WebDriver to enable human-like interactions, robust exception handling, and web automation tasks like popup handling and URL normalization."
 authors = [{ name = "FINWAX", email = "waxbid@gmail.com" }]
 license = { file = "LICENSE" }
