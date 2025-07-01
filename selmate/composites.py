@@ -541,7 +541,7 @@ def find_top_available_elements(by, value, driver, skip_under_one=True, sort_z_c
 
     return avb_elements
 
-
+@safe_not_interactable(def_val=False)
 @safe_stale(def_val=False)
 @safe_out_of_bound(def_val=False)
 def wander_between_2_elements(
